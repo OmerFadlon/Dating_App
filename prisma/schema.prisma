@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  name            String
+  password        String    // Should store a hashed password
+  description     String?
+  preference      Preference
+  createdAt       DateTime  @default(now())
+  photo           String?   // Optional photo field for users
+  
+  likedByUsers    Like[]    @relation("LikesReceived")  // Likes the user has received
+  sentMessages    Message[] @relation("SenderMessages") // Messages sent by the user
+  matchesAsA      Match[]   @relation("UserAMatches")   // Matches where user is User A
+  matchesAsB      Match[]   @relation("UserBMatches")   // Matches where user is User B
+  
+  // Reverse relation for likes given
+  givenLikes      Like[]    @relation("LikesGiven") // Likes given by the user
+}
+
+model Like {
+  id            Int    @id @default(autoincrement())
+  userId        Int
+  likedUserId   Int
+
+  user          User   @relation("LikesGiven", fields: [userId], references: [id])
+  likedUser     User   @relation("LikesReceived", fields: [likedUserId], references: [id])
+
+  @@unique([userId, likedUserId]) // Ensure a like record is unique between two users
+}
+
+model Match {
+  id          Int      @id @default(autoincrement())
+  userA       Int
+  userB       Int
+
+  userAObj    User     @relation("UserAMatches", fields: [userA], references: [id])
+  userBObj    User     @relation("UserBMatches", fields: [userB], references: [id])
+
+  createdAt   DateTime @default(now())
+
+  @@unique([userA, userB]) // Unique constraint to prevent duplicate matches
+  
+  messages    Message[] // A match can have many messages
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  matchId   Int
+  senderId  Int
+  message   String   
+
+  match     Match    @relation(fields: [matchId], references: [id])
+  sender    User     @relation("SenderMessages", fields: [senderId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+enum Preference {
+  men
+  women
+  both
+}

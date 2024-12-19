@@ -1,0 +1,24 @@
+version: '27.3.1'
+services:
+  dev-db:
+    image: postgres:13
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_USER: omer
+      POSTGRES_PASSWORD: OmerFad
+      POSTGRES_DB: datingApp
+    networks:
+      - datingAppProject
+  test-db:
+    image: postgres:13
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_USER: omer
+      POSTGRES_PASSWORD: OmerFad
+      POSTGRES_DB: datingApp
+    networks:
+      - datingAppProject
+networks:
+  datingAppProject:
