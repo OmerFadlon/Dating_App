@@ -17,9 +17,10 @@ model User {
   id              Int       @id @default(autoincrement())
   email           String    @unique
   name            String
-  password        String    // Should store a hashed password
+  hash            String       
   description     String?
   preference      Preference
+  gender          Gender
   createdAt       DateTime  @default(now())
   photo           String?   // Optional photo field for users
   
@@ -74,4 +75,9 @@ enum Preference {
   men
   women
   both
+}
+
+enum Gender {
+  man
+  woman
 }

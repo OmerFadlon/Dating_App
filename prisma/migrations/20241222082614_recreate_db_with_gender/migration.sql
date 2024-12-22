@@ -1,14 +1,18 @@
 -- CreateEnum
 CREATE TYPE "Preference" AS ENUM ('men', 'women', 'both');
 
+-- CreateEnum
+CREATE TYPE "Gender" AS ENUM ('man', 'woman');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
+    "hash" TEXT NOT NULL,
     "description" TEXT,
     "preference" "Preference" NOT NULL,
+    "gender" "Gender" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "photo" TEXT,
 
