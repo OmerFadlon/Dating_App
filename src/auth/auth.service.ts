@@ -1,14 +1,19 @@
-import { ForbiddenException, Injectable, BadRequestException, InternalServerErrorException } from "@nestjs/common";
-import { User } from "@prisma/client";
+import { ForbiddenException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthDto, SignUpDto } from "./dto";
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { Sign } from "crypto";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
+import { promises } from "dns";
 
 @Injectable({})
 export class AuthService{
-    constructor(private prisma: PrismaService){}
+    constructor(
+        private prisma: PrismaService,
+        private jwt: JwtService, 
+        private config: ConfigService
+        ) {}
     
     async signup(dto: SignUpDto) {
 
@@ -29,10 +34,8 @@ export class AuthService{
                 },
             });
 
-            delete user.hash;
-
-            // Return the new user
-            return user;
+            // Return a jwt
+            return this.generateToken(user.id, user.email);
         
         // Handle exeptions in case creation failed
         } catch(error){
@@ -68,9 +71,30 @@ export class AuthService{
         if (!isMatch)
             throw new ForbiddenException('Incorrect password',);
 
-        delete user.hash;
-        // Return the user
-        return user;
+        // Return a jwt
+        return this.generateToken(user.id, user.email);
+    }
+
+    // Generate a JWT Token
+    async generateToken(userId: number, email: string): Promise<{jwt_token: string}> {
+        const payload = {
+            sub: userId,
+            email
+        }
+
+        const secret = this.config.get("JWT_SECRET")
+
+        const token =  await this.jwt.signAsync(
+            payload, 
+            {
+            expiresIn: '60m',
+            secret: secret,
+            },
+        );
+
+        return {
+            jwt_token: token,
+          };
     }
 
 }
