@@ -19,11 +19,6 @@ export class SignUpDto {
    @MaxLength(255)
    @IsOptional()
    description: string;
-   
-   @IsUrl()
-   @IsString()
-   @IsOptional()
-   photo: string;
  
    @IsEnum(Preference)
    @IsNotEmpty()

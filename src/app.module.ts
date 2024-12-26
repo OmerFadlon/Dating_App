@@ -6,8 +6,9 @@ import { MatchModule } from './match/match.module';
 import { ChatModule } from './chat/chat.module';
 import { NotificationModule } from './notification/notification.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { SwipeModule } from './swipe/swipe.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({isGlobal : true, }), AuthModule, UserModule, MatchModule, ChatModule, NotificationModule, PrismaModule],
+  imports: [ConfigModule.forRoot({isGlobal : true, }), AuthModule, UserModule, MatchModule, ChatModule, NotificationModule, PrismaModule, SwipeModule],
 })
 export class AppModule {}
