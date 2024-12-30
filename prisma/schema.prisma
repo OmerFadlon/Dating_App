@@ -13,6 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model User {
   id              Int       @id @default(autoincrement())
   email           String    @unique
@@ -33,16 +34,20 @@ model User {
   givenLikes      Like[]    @relation("LikesGiven") // Likes given by the user
 }
 
+
 model Like {
-  id            Int    @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   userId        Int
   likedUserId   Int
+  direction     LikeDirection
+  createdAt     DateTime       @default(now())
 
   user          User   @relation("LikesGiven", fields: [userId], references: [id])
   likedUser     User   @relation("LikesReceived", fields: [likedUserId], references: [id])
 
   @@unique([userId, likedUserId]) // Ensure a like record is unique between two users
 }
+
 
 model Match {
   id          Int      @id @default(autoincrement())
@@ -58,6 +63,7 @@ model Match {
   
   messages    Message[] // A match can have many messages
 }
+
 
 model Message {
   id        Int      @id @default(autoincrement())
@@ -75,6 +81,11 @@ enum Preference {
   men
   women
   both
+}
+
+enum LikeDirection {
+  LIKE
+  DISLIKE
 }
 
 enum Gender {

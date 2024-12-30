@@ -15,12 +15,7 @@ export class EditUserDto {
    @MaxLength(255)
    @IsOptional()
    description?: string;
-   
-   @IsUrl()
-   @IsString()
-   @IsOptional()
-   photo?: string;
- 
+  
    @IsEnum(Preference)
    @IsOptional()
    preference?: Preference;

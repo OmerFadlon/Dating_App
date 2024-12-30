@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { EditUserDto } from "./dto";
-import { Observable, of } from 'rxjs';
 
 @Injectable({})
 export class UserService{
@@ -37,4 +36,5 @@ export class UserService{
       delete user.hash
       return user;
     }
+
 }

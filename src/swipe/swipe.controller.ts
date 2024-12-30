@@ -2,7 +2,7 @@
 Endpoints:
 
     @Get
-    explore - get a batch of potential matches based on preferences
+    getPotentialMatches
 
     @Post
     swipeRight - add a like to a specific match, in case there is a match do some actions
@@ -12,3 +12,23 @@ Endpoints:
     Some how the mechanism of getting the next user should be implemented, 
     either in the client side if he already has a batch of users or in the user module to get a user by id(if the client only saves the id of the batch of users)
 */
+
+import { Controller, Get, UseGuards } from "@nestjs/common";
+import { JwtGuard } from "src/auth/guard";
+import { SwipeService } from "./swipe.service";
+import { GetUser } from "src/auth/decorator";
+import { Preference } from "@prisma/client";
+
+@UseGuards(JwtGuard)
+@Controller('Swipes')
+export class SwipeController{
+    constructor(private swipeService: SwipeService){}
+
+    /*
+    Get the profiles of a batch of potential matches based on your preferences
+    */
+    @Get('profiles')
+    getPotentialMatches(@GetUser('id') userId: number, @GetUser('preference') userPreference: Preference ){
+        return this.swipeService.getPotentialMatches(userId, userPreference);
+    }
+}
