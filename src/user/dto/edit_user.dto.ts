@@ -1,5 +1,5 @@
-import{ IsString, IsEmail, MaxLength, IsEnum, IsUrl, IsOptional} from 'class-validator';
-import { Preference, Gender } from '@prisma/client';
+import{ IsString, IsEmail, MaxLength, IsEnum, IsUrl, IsOptional, IsInt, Max, Min} from 'class-validator';
+import { Gender, GenderPreference } from '@prisma/client';
 export class EditUserDto {
    
    @IsEmail()
@@ -16,11 +16,34 @@ export class EditUserDto {
    @IsOptional()
    description?: string;
   
-   @IsEnum(Preference)
+   @IsInt()
+   @Max(120)
+   @Min(16)
    @IsOptional()
-   preference?: Preference;
+   age?: number;
+
+   @IsInt()
+   @Max(120)
+   @Min(16)
+   @IsOptional()
+   minAgePreference?: number;
+
+   @IsInt()
+   @Max(120)
+   @Min(16)
+   @IsOptional()
+   maxAgePreference?: number;
 
    @IsEnum(Gender)
    @IsOptional()
    gender?: Gender;
+
+   @IsEnum(GenderPreference)
+   @IsOptional()
+   genderPreference?: GenderPreference;
+
+   @IsString()
+   @MaxLength(50)
+   @IsOptional()
+   city: string
 }

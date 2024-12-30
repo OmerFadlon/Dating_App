@@ -15,16 +15,20 @@ datasource db {
 
 
 model User {
-  id              Int       @id @default(autoincrement())
-  email           String    @unique
-  name            String
-  hash            String       
-  description     String?
-  preference      Preference
-  gender          Gender
-  createdAt       DateTime  @default(now())
-  photo           String?   // Optional photo field for users
-  
+  id                Int       @id @default(autoincrement())
+  email             String    @unique
+  name              String
+  hash              String       
+  description       String?
+  age               Int
+  minAgePreference  Int
+  maxAgePreference  Int
+  gender            Gender
+  genderPreference  GenderPreference
+  city              String
+  createdAt         DateTime  @default(now())
+  photo             String?   
+
   likedByUsers    Like[]    @relation("LikesReceived")  // Likes the user has received
   sentMessages    Message[] @relation("SenderMessages") // Messages sent by the user
   matchesAsA      Match[]   @relation("UserAMatches")   // Matches where user is User A
@@ -77,18 +81,19 @@ model Message {
   createdAt DateTime @default(now())
 }
 
-enum Preference {
-  men
-  women
-  both
-}
-
 enum LikeDirection {
-  LIKE
-  DISLIKE
+  like
+  dislike
 }
 
 enum Gender {
-  man
-  woman
+  male
+  female
+  other
+}
+
+enum GenderPreference{
+  men
+  women
+  both
 }

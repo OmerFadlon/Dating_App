@@ -17,7 +17,7 @@ import { Controller, Get, UseGuards } from "@nestjs/common";
 import { JwtGuard } from "src/auth/guard";
 import { SwipeService } from "./swipe.service";
 import { GetUser } from "src/auth/decorator";
-import { Preference } from "@prisma/client";
+import { GenderPreference, User } from "@prisma/client";
 
 @UseGuards(JwtGuard)
 @Controller('Swipes')
@@ -27,8 +27,9 @@ export class SwipeController{
     /*
     Get the profiles of a batch of potential matches based on your preferences
     */
-    @Get('profiles')
-    getPotentialMatches(@GetUser('id') userId: number, @GetUser('preference') userPreference: Preference ){
-        return this.swipeService.getPotentialMatches(userId, userPreference);
+    @Get('potentialMatches')
+    getPotentialMatches(@GetUser() user: User ){
+        const preferences = {city: user.city, gender: user.genderPreference, minAge: user.minAgePreference, maxAge: user.maxAgePreference}
+        return this.swipeService.getPotentialMatches(user.id, preferences);
     }
 }

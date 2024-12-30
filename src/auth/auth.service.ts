@@ -28,8 +28,12 @@ export class AuthService{
                     hash,
                     name: dto.name,
                     description: dto.description,
-                    preference: dto.preference,
-                    gender: dto.gender
+                    age: dto.age,
+                    minAgePreference: dto.minAgePreference,
+                    maxAgePreference: dto.maxAgePreference,
+                    gender: dto.gender,
+                    genderPreference: dto.genderPreference,
+                    city: dto.city
                 },
             });
 

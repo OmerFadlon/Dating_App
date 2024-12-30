@@ -1,5 +1,5 @@
-import{ IsString, IsEmail,  IsNotEmpty, MaxLength, IsEnum, IsUrl, IsOptional} from 'class-validator';
-import { Preference, Gender } from '@prisma/client';
+import{ IsString, IsEmail,  IsNotEmpty, MaxLength, IsEnum, IsOptional, IsInt, Max, Min} from 'class-validator';
+import { Gender, GenderPreference } from '@prisma/client';
 export class SignUpDto {
    
    @IsEmail()
@@ -19,12 +19,36 @@ export class SignUpDto {
    @MaxLength(255)
    @IsOptional()
    description: string;
- 
-   @IsEnum(Preference)
+
+   @IsInt()
+   @Max(120)
+   @Min(16)
    @IsNotEmpty()
-   preference: Preference;
+   age: number;
+
+   @IsInt()
+   @Max(120)
+   @Min(16)
+   @IsNotEmpty()
+   minAgePreference: number;
+
+   @IsInt()
+   @Max(120)
+   @Min(16)
+   @IsNotEmpty()
+   maxAgePreference: number;
 
    @IsEnum(Gender)
    @IsNotEmpty()
    gender: Gender;
+
+   @IsEnum(GenderPreference)
+   @IsNotEmpty()
+   genderPreference: GenderPreference;
+
+   @IsString()
+   @IsNotEmpty()
+   @MaxLength(50)
+   city: string
+
 }
