@@ -36,6 +36,14 @@ model User {
   
   // Reverse relation for likes given
   givenLikes      Like[]    @relation("LikesGiven") // Likes given by the user
+
+  // Indexes for filtering by prefrences:
+  @@index([age])  
+  @@index([city]) 
+  @@index([gender]) 
+  @@index([genderPreference]) 
+  @@index([minAgePreference]) 
+  @@index([maxAgePreference]) 
 }
 
 
@@ -50,6 +58,10 @@ model Like {
   likedUser     User   @relation("LikesReceived", fields: [likedUserId], references: [id])
 
   @@unique([userId, likedUserId]) // Ensure a like record is unique between two users
+
+  @@index([userId])          
+  @@index([likedUserId])    
+  @@index([userId, likedUserId, direction]) 
 }
 
 

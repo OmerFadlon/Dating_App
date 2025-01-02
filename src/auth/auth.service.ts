@@ -10,7 +10,7 @@ import { ConfigService } from "@nestjs/config";
 @Injectable({})
 export class AuthService{
     constructor(
-        private prisma: PrismaService,
+        private prismaService: PrismaService,
         private jwt: JwtService, 
         private config: ConfigService
         ) {}
@@ -22,7 +22,7 @@ export class AuthService{
         
         // Add the user to the db
         try{
-            const user = await this.prisma.user.create({
+            const user = await this.prismaService.user.create({
                 data:{
                     email: dto.email,
                     hash,
@@ -46,8 +46,6 @@ export class AuthService{
                 switch (error.code){
                     case 'P2002':
                         throw new ForbiddenException('Credentials taken',);
-                    case 'P2004':
-                        throw new ForbiddenException('A constraint was violated.');
                     default:
                         throw new InternalServerErrorException('Unexpected database error.');
                 }
@@ -58,7 +56,7 @@ export class AuthService{
 
     async signin(dto: AuthDto) {
         // Verify email by searching it in the User table
-        const user = await this.prisma.user.findUnique({
+        const user = await this.prismaService.user.findUnique({
             where: {
                 email: dto.email,
             },
