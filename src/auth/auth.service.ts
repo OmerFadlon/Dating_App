@@ -5,6 +5,7 @@ import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import { PrismaErrorHandler } from "src/prisma/prisma.errorhandler";
 
 
 @Injectable({})
@@ -12,7 +13,8 @@ export class AuthService{
     constructor(
         private prismaService: PrismaService,
         private jwt: JwtService, 
-        private config: ConfigService
+        private config: ConfigService,
+        private errorHandler: PrismaErrorHandler,
         ) {}
     
     async signup(dto: SignUpDto) {
@@ -40,17 +42,9 @@ export class AuthService{
             // Return a jwt
             return this.generateToken(user.id, user.email);
         
-        // Handle exeptions in case creation failed
+        // Handle db related errors
         } catch(error){
-            if (error instanceof PrismaClientKnownRequestError){
-                switch (error.code){
-                    case 'P2002':
-                        throw new ForbiddenException('Credentials taken',);
-                    default:
-                        throw new InternalServerErrorException('Unexpected database error.');
-                }
-            }
-            throw error;
+            throw this.errorHandler.handleError(error);
         }
     }
 

@@ -66,31 +66,38 @@ model Like {
 
 
 model Match {
-  id          Int      @id @default(autoincrement())
-  userA       Int
-  userB       Int
-
-  userAObj    User     @relation("UserAMatches", fields: [userA], references: [id])
-  userBObj    User     @relation("UserBMatches", fields: [userB], references: [id])
-
+  userAId       Int
+  userBId      Int
   createdAt   DateTime @default(now())
 
-  @@unique([userA, userB]) // Unique constraint to prevent duplicate matches
+  userAObj    User     @relation("UserAMatches", fields: [userAId], references: [id])
+  userBObj    User     @relation("UserBMatches", fields: [userBId], references: [id])
+
+  // One to many relation - many saved messages for each match
+  messages    Message[] 
   
-  messages    Message[] // A match can have many messages
+
+  @@id([userAId, userBId])
+
+  // Indexes for efficient lookups
+  @@index([userAId])
+  @@index([userBId])
 }
 
 
 model Message {
   id        Int      @id @default(autoincrement())
-  matchId   Int
+  userAId   Int
+  userBId   Int
   senderId  Int
-  message   String   
+  message   String
+  createdAt DateTime @default(now())
 
-  match     Match    @relation(fields: [matchId], references: [id])
+  match     Match    @relation(fields: [userAId, userBId], references: [userAId, userBId])
   sender    User     @relation("SenderMessages", fields: [senderId], references: [id])
 
-  createdAt DateTime @default(now())
+  @@index([userAId, userBId])
+  
 }
 
 enum LikeDirection {

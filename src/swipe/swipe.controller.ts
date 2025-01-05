@@ -18,9 +18,10 @@ import { JwtGuard } from "src/auth/guard";
 import { SwipeService } from "./swipe.service";
 import { GetUser } from "src/auth/decorator";
 import { GenderPreference, User } from "@prisma/client";
+import { LikeDto } from "./dto";
 
 @UseGuards(JwtGuard)
-@Controller('Swipes')
+@Controller('swipes')
 export class SwipeController{
     constructor(private swipeService: SwipeService){}
 
@@ -37,16 +38,15 @@ export class SwipeController{
     Swipe right - Add a like to a chosen user
      */
     @Post('swipeRight')
-    async swipeRight(@GetUser('id') userId: number, @Body() body: {likedUserId: number}){
-        return this.swipeService.swipeRight(userId, body.likedUserId);
+    async swipeRight(@Body() dto: LikeDto){
+        return this.swipeService.swipeRight(dto);
     }
 
     /*
     Swipe left - delete the like that the given user gave me
     */
     @Post('swipeLeft')
-    async swipeLeft(@GetUser('id') userId: number, @Body() body: { likedUserId: number }){
-        const dislikedUserId = body.likedUserId
-        return this.swipeService.swipeLeft(userId, dislikedUserId);
+    async swipeLeft(@Body() dto: LikeDto){
+        return this.swipeService.swipeLeft(dto);
       }
 }
